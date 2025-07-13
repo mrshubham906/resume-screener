@@ -463,7 +463,6 @@ curl -X POST "http://localhost:8000/search/" \
 
 - API key authentication for all endpoints
 - File upload validation and sanitization
-- Rate limiting on API endpoints
 - Secure environment variable handling
 
 ## Monitoring

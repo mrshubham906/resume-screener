@@ -1,26 +1,20 @@
-from fastapi import HTTPException, Security, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import HTTPException, Depends, Header
 from app.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
 
-security = HTTPBearer()
 
-
-async def verify_api_key(credentials: HTTPAuthorizationCredentials = Security(security)):
+async def verify_api_key(x_api_key: str = Header(..., alias="X-API-Key")):
     """Verify API key from request header"""
-    api_key = credentials.credentials
-    
-    if api_key != settings.api_key:
-        logger.warning(f"Invalid API key attempt: {api_key[:10]}...")
+    if x_api_key != settings.api_key:
+        logger.warning(f"Invalid API key attempt: {x_api_key[:10]}...")
         raise HTTPException(
             status_code=401,
             detail="Invalid API key",
-            headers={"WWW-Authenticate": "Bearer"},
         )
     
-    return api_key
+    return x_api_key
 
 
 def get_api_key_header(api_key: str = Depends(verify_api_key)):
